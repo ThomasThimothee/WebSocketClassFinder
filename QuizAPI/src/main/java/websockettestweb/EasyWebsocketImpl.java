@@ -1,7 +1,8 @@
-package websockettestweb;
+package test;
 
 import org.clapper.util.classutil.ClassFinder;
 import org.clapper.util.classutil.ClassInfo;
+import websockettestweb.IEasyWebsocket;
 
 /**
  *

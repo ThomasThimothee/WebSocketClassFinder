@@ -1,17 +1,11 @@
 package websockettestweb;
 
 import java.io.File;
-import java.io.FilenameFilter;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.websocket.OnMessage;
@@ -28,6 +22,8 @@ public class AnnotatedEndpoint {
     public AnnotatedEndpoint() {
 
         try {
+
+            System.out.println("--------------------------------------------------------------test------------------------------------------");
             String path = "";
             String newPath = "";
             try {
@@ -62,22 +58,29 @@ public class AnnotatedEndpoint {
             URLClassLoader urlLoader = new URLClassLoader(url);
             for (File file : classDir.listFiles()) {
                 System.out.println("in loop 3");
-              String  filename = file.getName();
+                String filename = file.getName();
                 System.out.println("file name: " + filename);
 
-                /*                
-            if (filename.equals("EasyWebsocketImpl.class")){
-                Class instance = (Class) urlLoader.loadClass(filename).newInstance();
-                                  
-               Class[] i = instance.getInterfaces();
-               System.out.println("Interfaces = " + Arrays.asList(i));
-            }
-                 */
+                if (filename.equals("EasyWebsocketImpl.class")) {
+                    Class EasyWebsocketClass;
+                    try {
+                        EasyWebsocketClass = urlLoader.loadClass(filename);
+                        IEasyWebsocket webSocket = (IEasyWebsocket) EasyWebsocketClass.newInstance();
+                    } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+                        Logger.getLogger(AnnotatedEndpoint.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    //System.out.println("Interfaces = " + Arrays.asList(i));
+                    
+                    
+
+                    //System.out.println("Interfaces = " + Arrays.asList(i));
+                }
+
             }
 
         } catch (MalformedURLException ex) {
             Logger.getLogger(AnnotatedEndpoint.class.getName()).log(Level.SEVERE, null, ex);
-        } 
+        }
     }
 
     @OnMessage
