@@ -1,19 +1,17 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package websockettestweb;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.websocket.OnMessage;
-import javax.websocket.Session;
-import javax.websocket.server.ServerEndpoint;
 import org.clapper.util.classutil.AndClassFilter;
 import org.clapper.util.classutil.ClassFilter;
 import org.clapper.util.classutil.ClassFinder;
@@ -21,17 +19,17 @@ import org.clapper.util.classutil.ClassInfo;
 import org.clapper.util.classutil.InterfaceOnlyClassFilter;
 import org.clapper.util.classutil.NotClassFilter;
 import org.clapper.util.classutil.SubclassClassFilter;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
  *
- * @author mathiasjepsen
+ * @author thomasthimothee
  */
-@ServerEndpoint("/api")
-public class AnnotatedEndpoint{
-    private IEasyWebsocket webscoket;
-    
-    public AnnotatedEndpoint() throws InstantiationException, IllegalAccessException{
-    try {
+public class MyClassFinder {
+
+    public MyClassFinder() throws InstantiationException, IllegalAccessException {
+        try {
             URL url = null;
 
             try {
@@ -60,8 +58,8 @@ public class AnnotatedEndpoint{
              String[] inter = classInfo.getInterfaces();
              for (String in : inter) System.out.println("inter: " + in);
              
-             webscoket = (IEasyWebsocket)Class.forName(classInfo.getClassName()).newInstance();
-             System.out.println(webscoket.handleMessage("sd"));
+            IEasyWebsocket newObject = (IEasyWebsocket)Class.forName(classInfo.getClassName()).newInstance();
+            // this part is usefull if you wanna run a specifc method on run time
             //Method[] methods = newObject.getClass().getMethods();
 //            for (Method met : methods)
 //            {
@@ -74,11 +72,7 @@ public class AnnotatedEndpoint{
         } catch (URISyntaxException | SecurityException | IllegalArgumentException | ClassNotFoundException  ex) {
             Logger.getLogger(MyClassFinder.class.getName()).log(Level.SEVERE, null, ex);
         }
+
     }
 
-    @OnMessage
-    public void onMessage(Session session, String msg) throws IOException {
-        System.out.println("Recived message"+msg);
-        session.getBasicRemote().sendText(webscoket.handleMessage(msg));
-    }
 }

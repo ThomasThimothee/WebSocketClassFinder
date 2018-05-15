@@ -1,12 +1,14 @@
 package websockettestweb;
 
-import org.clapper.util.classutil.ClassFilter;
+import javax.websocket.Session;
+
+
 
 /**
  *
  * @author mathiasjepsen
  */
-public interface IEasyWebsocket extends ClassFilter{
+public interface IEasyWebsocket{
     
     String handleMessage(String msg);
     
