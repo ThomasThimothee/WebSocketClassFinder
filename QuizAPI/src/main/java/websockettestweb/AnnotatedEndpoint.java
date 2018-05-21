@@ -9,9 +9,14 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
+import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 import org.clapper.util.classutil.AndClassFilter;
@@ -29,6 +34,7 @@ import org.clapper.util.classutil.SubclassClassFilter;
 @ServerEndpoint("/api")
 public class AnnotatedEndpoint{
     private IEasyWebsocket webscoket;
+    private static final Set<Session> sessions = Collections.synchronizedSet(new HashSet<Session>());
     
     public AnnotatedEndpoint() throws InstantiationException, IllegalAccessException{
     try {
@@ -70,15 +76,33 @@ public class AnnotatedEndpoint{
 //                     met.invoke(newObject);
 //                 }
 //             }
+            Thread t1 = new Thread(() ->{
+               webscoket.pushNotification(sessions);
+            });
+            t1.start();
          }
         } catch (URISyntaxException | SecurityException | IllegalArgumentException | ClassNotFoundException  ex) {
             Logger.getLogger(MyClassFinder.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    @OnOpen
+    public void onOpen(Session session){
+        sessions.add(session);
+        System.out.println("added session");
+       
+    }
     @OnMessage
-    public void onMessage(Session session, String msg) throws IOException {
+    public void onMessage(Session session, String msg) throws IOException{
+         System.out.println("amount of sessions "+sessions.size());
         System.out.println("Recived message"+msg);
         session.getBasicRemote().sendText(webscoket.handleMessage(msg));
     }
+    @OnClose
+    public void onClose(Session session){
+        System.out.println("Session: "+session.getId()+" has disconected");
+        sessions.remove(session);
+    }
+    
+    
+   
 }

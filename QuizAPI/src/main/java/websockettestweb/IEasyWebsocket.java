@@ -1,5 +1,6 @@
 package websockettestweb;
 
+import java.util.Set;
 import javax.websocket.Session;
 
 
@@ -11,5 +12,6 @@ import javax.websocket.Session;
 public interface IEasyWebsocket{
     
     String handleMessage(String msg);
+    void pushNotification(Set<Session> sessions);
     
 }
