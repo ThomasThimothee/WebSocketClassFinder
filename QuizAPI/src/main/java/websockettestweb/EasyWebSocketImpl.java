@@ -10,14 +10,12 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.websocket.Session;
-import org.clapper.util.classutil.ClassFinder;
-import org.clapper.util.classutil.ClassInfo;
 
 /**
  *
  * @author pravien
  */
-public class testImpl implements IEasyWebsocket {
+public class EasyWebSocketImpl implements IEasyWebsocket {
 
     private Session session;
 
@@ -40,7 +38,7 @@ public class testImpl implements IEasyWebsocket {
             for (Session s : sessions) {
                 if (s.isOpen()) {
                     try {
-                        System.out.println("sending..to"+s.getId());
+                        System.out.println("sending..to" + s.getId());
                         s.getBasicRemote().sendText("yolo");
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -49,13 +47,13 @@ public class testImpl implements IEasyWebsocket {
             }
             try {
                 System.out.println("before sleeep");
-            Thread.sleep(60000);
-            System.out.println("after sleeep");
-        } catch (InterruptedException ex) {
-            Logger.getLogger(testImpl.class.getName()).log(Level.SEVERE, null, ex);
+                Thread.sleep(3000);
+                System.out.println("after sleeep");
+            } catch (InterruptedException ex) {
+                Logger.getLogger(EasyWebSocketImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
-        }
-        
+
     }
 
 }

@@ -6,8 +6,6 @@
 package websockettestweb;
 
 import java.io.File;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Level;
@@ -19,8 +17,6 @@ import org.clapper.util.classutil.ClassInfo;
 import org.clapper.util.classutil.InterfaceOnlyClassFilter;
 import org.clapper.util.classutil.NotClassFilter;
 import org.clapper.util.classutil.SubclassClassFilter;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 /**
  *
@@ -28,51 +24,26 @@ import java.lang.reflect.Method;
  */
 public class MyClassFinder {
 
-    public MyClassFinder() throws InstantiationException, IllegalAccessException {
+    IEasyWebsocket findClass(File dir) {
         try {
-            URL url = null;
-
-            try {
-                url = getClass().getResource(".");
-            } catch (Exception e) {
-            }
-
-            File dir = new File(url.toURI());
-            
             ClassFinder finder = new ClassFinder();
             finder.add(dir);
-            ClassFilter filter =
-             new AndClassFilter
-                 // Must not be an interface
-                 (new NotClassFilter (new InterfaceOnlyClassFilter()),
+            ClassFilter filter
+                    = new AndClassFilter // Must not be an interface
+                    (new NotClassFilter(new InterfaceOnlyClassFilter()),
+                            // Must implement the ITestClass interface
+                            new SubclassClassFilter(IEasyWebsocket.class));
 
-                 // Must implement the ITestClass interface
-                 new SubclassClassFilter (IEasyWebsocket.class));
+            Collection<ClassInfo> foundClasses = new ArrayList();
+            finder.findClasses(foundClasses, filter);
 
-
-         Collection<ClassInfo> foundClasses = new ArrayList();
-         finder.findClasses (foundClasses, filter);
-
-         for (ClassInfo classInfo : foundClasses){
-             System.out.println ("Found " + classInfo.getClassName());
-             String[] inter = classInfo.getInterfaces();
-             for (String in : inter) System.out.println("inter: " + in);
-             
-            IEasyWebsocket newObject = (IEasyWebsocket)Class.forName(classInfo.getClassName()).newInstance();
-            // this part is usefull if you wanna run a specifc method on run time
-            //Method[] methods = newObject.getClass().getMethods();
-//            for (Method met : methods)
-//            {
-//                System.out.println(met.getName());
-//                 if(met.getName().equals("run")){
-//                     met.invoke(newObject);
-//                 }
-//             }
-         }
-        } catch (URISyntaxException | SecurityException | IllegalArgumentException | ClassNotFoundException  ex) {
+            ArrayList<ClassInfo> foundClassesArr = new ArrayList<>(foundClasses);
+            ClassInfo classInfo = foundClassesArr.get(0);
+            return (IEasyWebsocket) Class.forName(classInfo.getClassName()).newInstance();
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             Logger.getLogger(MyClassFinder.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        return null;
     }
 
 }
