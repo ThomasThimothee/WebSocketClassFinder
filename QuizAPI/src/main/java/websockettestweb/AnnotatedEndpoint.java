@@ -27,16 +27,12 @@ public class AnnotatedEndpoint {
 
     public AnnotatedEndpoint() throws InstantiationException, IllegalAccessException {
         try {
-            URL url = null;
 
-            try {
-                url = getClass().getResource(".");
-            } catch (Exception e) {
-            }
-
+            URL url = getClass().getResource(".");
             File dir = new File(url.toURI());
-            MyClassFinder cf = new MyClassFinder();
-            userImplementation = cf.findClass(dir);          
+            
+            MyClassFinder cf = new MyClassFinder();            
+            userImplementation = cf.findClass(dir);
 
             Thread t1 = new Thread(() -> {
                 userImplementation.pushNotification(sessions);

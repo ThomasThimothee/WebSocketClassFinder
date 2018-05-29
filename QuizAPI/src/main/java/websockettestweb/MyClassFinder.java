@@ -29,8 +29,9 @@ public class MyClassFinder {
             ClassFinder finder = new ClassFinder();
             finder.add(dir);
             ClassFilter filter
-                    = new AndClassFilter // Must not be an interface
-                    (new NotClassFilter(new InterfaceOnlyClassFilter()),
+                    = new AndClassFilter 
+                            // Must not be an interface
+                            (new NotClassFilter(new InterfaceOnlyClassFilter()),
                             // Must implement the ITestClass interface
                             new SubclassClassFilter(IEasyWebsocket.class));
 
@@ -38,8 +39,12 @@ public class MyClassFinder {
             finder.findClasses(foundClasses, filter);
 
             ArrayList<ClassInfo> foundClassesArr = new ArrayList<>(foundClasses);
+            
+            //hardcode that we get the first class that matches these criteria
             ClassInfo classInfo = foundClassesArr.get(0);
+            
             return (IEasyWebsocket) Class.forName(classInfo.getClassName()).newInstance();
+            
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             Logger.getLogger(MyClassFinder.class.getName()).log(Level.SEVERE, null, ex);
         }
